@@ -15,7 +15,7 @@ PKG_LICENSE:=MIT
 PKG_CPE_ID:=cpe:/a:c-ares_project:c-ares
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://c-ares.haxx.se/download
+PKG_SOURCE_URL:=https://c-ares.haxx.se/download/
 PKG_HASH:=d73dd0f6de824afd407ce10750ea081af47eba52b8a6cb307d220131ad93fc40
 
 PKG_FIXUP:=autoreconf
@@ -43,14 +43,22 @@ Netware, Android and many more operating systems.
 
 endef
 
+CONFIGURE_ARGS += \
+	--enable-shared \
+	--enable-static \
+
 define Package/libcares/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so.* $(1)/usr/lib/
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)
-	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
+	$(INSTALL_DIR) $(1)/usr/include
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/ares*.h $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libcares.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libcares.pc $(1)/usr/lib/pkgconfig/
 endef
 
 $(eval $(call BuildPackage,libcares))
